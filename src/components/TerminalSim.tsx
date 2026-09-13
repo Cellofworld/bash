@@ -835,6 +835,127 @@ function simulateCommand(
     case 'pkill':
       return { output: '', newCwd: cwd, newFs: fs, isError: false };
     
+    case 'kubectl': {
+      const subCmd = args[0] || '';
+      if (subCmd === 'version') {
+        return { output: 'Client Version: v1.28.2\nKustomize Version: v5.0.4-0.20230601165947-6ce0bf3907af\nServer Version: v1.28.2', newCwd: cwd, newFs: fs, isError: false };
+      }
+      if (subCmd === 'get') {
+        if (args.includes('pods')) {
+          return { output: 'NAME                        READY   STATUS    RESTARTS   AGE\nnginx-deployment-5d8b4f   1/1     Running   0          5m\nredis-master-0            1/1     Running   0          10m', newCwd: cwd, newFs: fs, isError: false };
+        }
+        if (args.includes('deployments') || args.includes('deploy')) {
+          return { output: 'NAME               READY   UP-TO-DATE   AVAILABLE   AGE\nnginx-deployment   3/3     3            3           5m\nredis-master       1/1     1            1           10m', newCwd: cwd, newFs: fs, isError: false };
+        }
+        if (args.includes('services') || args.includes('svc')) {
+          return { output: 'NAME         TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE\nkubernetes   ClusterIP   10.96.0.1       <none>        443/TCP   1d\nnginx        ClusterIP   10.96.100.50    <none>        80/TCP    5m', newCwd: cwd, newFs: fs, isError: false };
+        }
+        if (args.includes('nodes')) {
+          return { output: 'NAME       STATUS   ROLES           AGE   VERSION\nnode-1     Ready    control-plane   1d    v1.28.2\nnode-2     Ready    <none>          1d    v1.28.2\nnode-3     Ready    <none>          1d    v1.28.2', newCwd: cwd, newFs: fs, isError: false };
+        }
+        return { output: 'No resources found', newCwd: cwd, newFs: fs, isError: false };
+      }
+      if (subCmd === 'create') {
+        return { output: 'deployment.apps/nginx created', newCwd: cwd, newFs: fs, isError: false };
+      }
+      if (subCmd === 'scale') {
+        return { output: 'deployment.apps/nginx scaled', newCwd: cwd, newFs: fs, isError: false };
+      }
+      if (subCmd === 'cluster-info') {
+        return { output: 'Kubernetes control plane is running at https://192.168.1.100:6443\nCoreDNS is running at https://192.168.1.100:6443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy', newCwd: cwd, newFs: fs, isError: false };
+      }
+      return { output: '', newCwd: cwd, newFs: fs, isError: false };
+    }
+    
+    case 'nmap':
+      return { output: 'Starting Nmap 7.94 ( https://nmap.org )\nNmap scan report for 192.168.1.1\nHost is up (0.0012s latency).\nNot shown: 997 closed ports\nPORT    STATE SERVICE\n22/tcp  open  ssh\n80/tcp  open  http\n443/tcp open  https\n\nNmap done: 1 IP address (1 host up) scanned in 0.45 seconds', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'nc':
+    case 'netcat':
+      return { output: 'Connection to 192.168.1.1 80 port [tcp/http] succeeded!', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'openssl': {
+      const subCmd = args[0] || '';
+      if (subCmd === 'genrsa') {
+        return { output: 'Generating RSA private key, 2048 bit long modulus\n....................+++++\n.....................+++++\ne is 65537 (0x10001)', newCwd: cwd, newFs: fs, isError: false };
+      }
+      if (subCmd === 'version') {
+        return { output: 'OpenSSL 3.0.2 15 Mar 2022 (Library: OpenSSL 3.0.2 15 Mar 2022)', newCwd: cwd, newFs: fs, isError: false };
+      }
+      return { output: '', newCwd: cwd, newFs: fs, isError: false };
+    }
+    
+    case 'ssh-keygen':
+      return { output: 'Generating public/private rsa key pair.\nEnter file in which to save the key (/home/student/.ssh/id_rsa): \nCreated directory \'/home/student/.ssh\'.\nYour identification has been saved in /home/student/.ssh/id_rsa\nYour public key has been saved in /home/student/.ssh/id_rsa.pub', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'tmux': {
+      const subCmd = args[0] || '';
+      if (subCmd === 'ls' || subCmd === 'list-sessions') {
+        return { output: '0: 1 windows (created Mon Jan  1 12:00:00 2024)\nwork: 2 windows (created Mon Jan  1 12:30:00 2024)', newCwd: cwd, newFs: fs, isError: false };
+      }
+      if (subCmd === 'new' || subCmd === 'new-session') {
+        return { output: '', newCwd: cwd, newFs: fs, isError: false };
+      }
+      return { output: '', newCwd: cwd, newFs: fs, isError: false };
+    }
+    
+    case 'screen': {
+      const subCmd = args[0] || '';
+      if (subCmd === '-ls' || subCmd === '-list') {
+        return { output: 'There are screens on:\n\t1234.pts-0.bash-tutorial\t(Detached)\n\t5678.work\t\t(Detached)\n2 Sockets in /run/screen/S-student.', newCwd: cwd, newFs: fs, isError: false };
+      }
+      return { output: '', newCwd: cwd, newFs: fs, isError: false };
+    }
+    
+    case 'identify':
+      return { output: 'image.jpg JPEG 1920x1080 1920x1080+0+0 8-bit sRGB 245678B 0.000u 0:00.000', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'convert':
+      return { output: '', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'ffmpeg':
+      return { output: 'ffmpeg version 5.1.2 Copyright (c) 2000-2022 the FFmpeg developers\nInput #0, mov,mp4,m4a,3gp,3g2,mj2, from \'video.avi\':\n  Duration: 00:05:30.12, start: 0.000000, bitrate: 2500 kb/s\nOutput #0, mp4, to \'video.mp4\':\n  Stream #0:0: Video: h264, 1280x720, q=2-31, 2000 kb/s', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'ffprobe':
+      return { output: 'Input #0, mov,mp4,m4a,3gp,3g2,mj2, from \'video.mp4\':\n  Metadata:\n    major_brand     : isom\n    minor_version   : 512\n  Duration: 00:05:30.12, start: 0.000000, bitrate: 2500 kb/s\n    Stream #0:0(und): Video: h264 (High), yuv420p, 1280x720, 2400 kb/s, 30 fps', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'pdftk':
+      return { output: 'InfoKey: Title\nInfoValue: Document Title\nInfoKey: Author\nInfoValue: John Doe\nInfoKey: Creator\nInfoValue: Microsoft Word\nNumberOfPages: 10', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'qpdf':
+      return { output: 'qpdf operating on file input.pdf\npages: 10\nencryption: none', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'gs':
+    case 'ghostscript':
+      return { output: 'GPL Ghostscript 10.00.0 (2022-03-27)\nCopyright (C) 2022 Artifex Software, Inc.  All rights reserved.', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'parallel':
+      return { output: '1\n2\n3\n4\n5', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'complete':
+      return { output: 'complete -F _git git\ncomplete -F _docker docker\ncomplete -F _kubectl kubectl\ncomplete -F _npm npm', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'shopt':
+      return { output: 'autocd          off\ncdable_vars     off\ncdspell         off\ndirexpand       off\ndirspell        off\nprogcomp        on', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'md5sum':
+      return { output: 'd41d8cd98f00b204e9800998ecf8427e  file.txt', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'sha256sum':
+      return { output: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  file.txt', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'gpg':
+      return { output: 'gpg (GnuPG) 2.2.27\nlibgcrypt 1.9.4\nCopyright (C) 2021 Free Software Foundation, Inc.', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'iperf':
+      return { output: '------------------------------------------------------------\nClient connecting to 192.168.1.1, TCP port 5001\nTCP window size: 85.0 KByte (default)\n------------------------------------------------------------\n[  3] local 192.168.1.10 port 54321 connected with 192.168.1.1 port 5001\n[ ID] Interval       Transfer     Bandwidth\n[  3] 0.0-10.0 sec  1.12 GBytes   963 Mbits/sec', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'mtr':
+      return { output: 'Host                     Loss%   Snt   Last   Avg  Best  Wrst StDev\n1. gateway               0.0%    10    1.2   1.3   1.1   1.5   0.1\n2. 10.0.0.1              0.0%    10    5.4   5.6   5.2   6.1   0.3\n3. 192.168.1.1           0.0%    10   12.3  12.5  12.1  13.0   0.3', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'tshark':
+      return { output: 'Capturing on \'eth0\'\n    1   0.000000 192.168.1.10 → 93.184.216.34 TCP 66 54321 → 80 [SYN] Seq=0 Win=64240\n    2   0.001234 93.184.216.34 → 192.168.1.10 TCP 66 80 → 54321 [SYN, ACK] Seq=0 Ack=1\n    3   0.001345 192.168.1.10 → 93.184.216.34 TCP 54 54321 → 80 [ACK] Seq=1 Ack=1', newCwd: cwd, newFs: fs, isError: false };
+    
     default:
       // Check for variable assignment
       if (trimmed.includes('=') && !trimmed.includes(' ')) {

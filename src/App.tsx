@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import { lessons as basicLessons } from './data/lessons';
 import { advancedLessons } from './data/lessons-advanced';
+import { ultimateLessons } from './data/lessons-ultimate';
 import { LessonView } from './components/LessonView';
 import { LessonList } from './components/LessonList';
 import { ProgressBar } from './components/ProgressBar';
 import { Header } from './components/Header';
 import type { Progress, Lesson } from './types';
 
-const lessons: Lesson[] = [...basicLessons, ...advancedLessons];
+const lessons: Lesson[] = [...basicLessons, ...advancedLessons, ...ultimateLessons];
 const TOTAL_LESSONS = lessons.length;
 
 const STORAGE_KEY = 'bash-tutorial-progress';
