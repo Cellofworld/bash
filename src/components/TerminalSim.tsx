@@ -395,7 +395,144 @@ function simulateCommand(
       return { output: '__CLEAR__', newCwd: cwd, newFs: fs, isError: false };
     
     case 'help':
-      return { output: 'Доступные команды: echo, pwd, ls, cd, touch, mkdir, cp, mv, rm, cat, head, tail, wc, grep, find, sort, sed, awk, ps, chmod, whoami, hostname, date, env, man, clear\n\nПопробуйте выполнить задание!', newCwd: cwd, newFs: fs, isError: false };
+      return { output: 'Доступные команды: echo, pwd, ls, cd, touch, mkdir, cp, mv, rm, cat, head, tail, wc, grep, find, sort, sed, awk, ps, chmod, chown, whoami, hostname, date, env, man, clear, systemctl, journalctl, df, du, free, uptime, uname, crontab, ping, ss, netstat, tar, gzip, zip, ssh, scp, curl, wget, ip, dig, top, kill, nice, rsync\n\nПопробуйте выполнить задание!', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'chown':
+      return { output: '', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'systemctl': {
+      const subCmd = args[0] || '';
+      const service = args[1] || '';
+      if (subCmd === 'status') {
+        return { output: `● ${service || 'service'}.service - Service Description\n   Loaded: loaded (/lib/systemd/system/${service || 'service'}.service; enabled)\n   Active: active (running) since Mon 2024-01-01 00:00:00 UTC\n   Main PID: 1234 (service)\n   Tasks: 5\n   Memory: 50.0M\n   CGroup: /system.slice/${service || 'service'}.service`, newCwd: cwd, newFs: fs, isError: false };
+      }
+      if (subCmd === 'list-timers') {
+        return { output: 'NEXT                        LEFT          LAST                        PASSED       UNIT                         ACTIVATES\nMon 2024-01-01 00:00:00 UTC  12h left      Sun 2023-12-31 00:00:00 UTC  12h ago      logrotate.timer              logrotate.service\nMon 2024-01-01 06:00:00 UTC  18h left      Sun 2023-12-31 06:00:00 UTC  6h ago       apt-daily.timer              apt-daily.service', newCwd: cwd, newFs: fs, isError: false };
+      }
+      if (subCmd === 'start' || subCmd === 'stop' || subCmd === 'restart' || subCmd === 'reload') {
+        return { output: '', newCwd: cwd, newFs: fs, isError: false };
+      }
+      if (subCmd === 'enable' || subCmd === 'disable') {
+        return { output: '', newCwd: cwd, newFs: fs, isError: false };
+      }
+      if (subCmd === 'is-active') {
+        return { output: 'active', newCwd: cwd, newFs: fs, isError: false };
+      }
+      return { output: '', newCwd: cwd, newFs: fs, isError: false };
+    }
+    
+    case 'journalctl': {
+      return { output: '-- Logs begin at Mon 2024-01-01 00:00:00 UTC --\nJan 01 00:00:01 bash-tutorial systemd[1]: Started Service.\nJan 01 00:00:02 bash-tutorial nginx[1234]: Starting nginx...\nJan 01 00:00:03 bash-tutorial nginx[1234]: Ready to accept connections.', newCwd: cwd, newFs: fs, isError: false };
+    }
+    
+    case 'df':
+      return { output: 'Filesystem      Size  Used Avail Use% Mounted on\n/dev/sda1        50G   20G   28G  42% /\ntmpfs           3.9G     0  3.9G   0% /dev/shm\n/dev/sda2       100G   45G   51G  47% /home', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'du': {
+      const target = args.find(a => !a.startsWith('-')) || '.';
+      if (args.includes('-sh') || args.some(a => a.includes('s') && a.includes('h'))) {
+        return { output: '2.5G\t' + target, newCwd: cwd, newFs: fs, isError: false };
+      }
+      return { output: '1.2G\t./src\n800M\t./node_modules\n500M\t./dist\n2.5G\t.', newCwd: cwd, newFs: fs, isError: false };
+    }
+    
+    case 'free':
+      return { output: '              total        used        free      shared  buff/cache   available\nMem:          7.7Gi       3.2Gi       2.1Gi       256Mi       2.4Gi       4.0Gi\nSwap:         2.0Gi          0B       2.0Gi', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'uptime':
+      return { output: ' 12:34:56 up 42 days,  3:21,  2 users,  load average: 0.15, 0.10, 0.05', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'uname':
+      return { output: 'Linux bash-tutorial 5.15.0-91-generic #101-Ubuntu SMP x86_64 GNU/Linux', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'crontab': {
+      if (args.includes('-l')) {
+        return { output: '# Edit this file to introduce tasks to be run by cron.\n# m h  dom mon dow   command\n0 3 * * * /usr/local/bin/backup.sh\n*/5 * * * * /usr/local/bin/check.sh', newCwd: cwd, newFs: fs, isError: false };
+      }
+      return { output: '', newCwd: cwd, newFs: fs, isError: false };
+    }
+    
+    case 'ping': {
+      const target = args.find(a => !a.startsWith('-')) || 'localhost';
+      return { output: `PING ${target} (93.184.216.34) 56(84) bytes of data.\n64 bytes from ${target} (93.184.216.34): icmp_seq=1 ttl=56 time=12.3 ms\n64 bytes from ${target} (93.184.216.34): icmp_seq=2 ttl=56 time=11.8 ms\n64 bytes from ${target} (93.184.216.34): icmp_seq=3 ttl=56 time=12.1 ms\n64 bytes from ${target} (93.184.216.34): icmp_seq=4 ttl=56 time=11.9 ms\n\n--- ${target} ping statistics ---\n4 packets transmitted, 4 received, 0% packet loss, time 3004ms\nrtt min/avg/max/mdev = 11.8/12.0/12.3/0.2 ms`, newCwd: cwd, newFs: fs, isError: false };
+    }
+    
+    case 'ss':
+      return { output: 'State     Recv-Q    Send-Q    Local Address:Port    Peer Address:Port    Process\nLISTEN    0         128       0.0.0.0:22              0.0.0.0:*              users:(("sshd",pid=1234))\nLISTEN    0         128       0.0.0.0:80              0.0.0.0:*              users:(("nginx",pid=5678))\nLISTEN    0         128       0.0.0.0:443             0.0.0.0:*              users:(("nginx",pid=5678))\nESTAB     0         0         192.168.1.10:22         192.168.1.5:54321      users:(("sshd",pid=1234))', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'netstat':
+      return { output: 'Active Internet connections (servers and established)\nProto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name\ntcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      1234/sshd\ntcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN      5678/nginx\ntcp        0      0 0.0.0.0:443             0.0.0.0:*               LISTEN      5678/nginx', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'tar': {
+      if (args.some(a => a.includes('c'))) {
+        return { output: args.includes('v') ? 'projects/\nprojects/src/\nprojects/src/index.js\nprojects/package.json' : '', newCwd: cwd, newFs: fs, isError: false };
+      }
+      if (args.some(a => a.includes('x'))) {
+        return { output: args.includes('v') ? 'projects/\nprojects/src/\nprojects/src/index.js\nprojects/package.json' : '', newCwd: cwd, newFs: fs, isError: false };
+      }
+      if (args.some(a => a.includes('t'))) {
+        return { output: 'projects/\nprojects/src/\nprojects/src/index.js\nprojects/package.json', newCwd: cwd, newFs: fs, isError: false };
+      }
+      return { output: '', newCwd: cwd, newFs: fs, isError: false };
+    }
+    
+    case 'gzip':
+    case 'gunzip':
+      return { output: '', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'zip':
+    case 'unzip':
+      return { output: args.includes('-l') ? 'Archive: archive.zip\n  Length      Date    Time    Name\n---------  ---------- -----   ----\n     1234  01-01-2024 00:00   file.txt\n     5678  01-01-2024 00:00   dir/file2.txt\n---------                     -------\n     6912                     2 files' : '', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'ssh':
+      return { output: 'Welcome to Ubuntu 22.04.3 LTS\nLast login: Mon Jan 1 00:00:00 2024 from 192.168.1.5\nstudent@server:~$', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'scp':
+      return { output: 'file.txt          100%  1234     1.2MB/s   00:01', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'rsync':
+      return { output: 'sending incremental file list\n./\nfile1.txt\nfile2.txt\n\nsent 1,234 bytes  received 100 bytes  2,668.00 bytes/sec\ntotal size is 5,678  speedup is 4.27', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'curl': {
+      const url = args.find(a => a.startsWith('http')) || 'http://example.com';
+      if (args.includes('-I') || args.includes('-i')) {
+        return { output: 'HTTP/1.1 200 OK\nDate: Mon, 01 Jan 2024 00:00:00 GMT\nServer: Apache/2.4.41\nContent-Type: text/html; charset=UTF-8\nContent-Length: 1234', newCwd: cwd, newFs: fs, isError: false };
+      }
+      return { output: '<!DOCTYPE html>\n<html>\n<head><title>Example</title></head>\n<body><h1>Hello World</h1></body>\n</html>', newCwd: cwd, newFs: fs, isError: false };
+    }
+    
+    case 'wget':
+      return { output: '--2024-01-01 00:00:00--  http://example.com/file.zip\nResolving example.com... 93.184.216.34\nConnecting to example.com|93.184.216.34|:80... connected.\nHTTP request sent, awaiting response... 200 OK\nLength: 1234567 (1.2M) [application/zip]\nSaving to: \'file.zip\'\n\nfile.zip          100%[===============>]   1.18M  2.5MB/s    in 0.5s\n\n2024-01-01 00:00:01 (2.5 MB/s) - \'file.zip\' saved [1234567/1234567]', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'ip':
+      return { output: '1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN\n    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00\n    inet 127.0.0.1/8 scope host lo\n2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP\n    link/ether 00:11:22:33:44:55 brd ff:ff:ff:ff:ff:ff\n    inet 192.168.1.10/24 brd 192.168.1.255 scope global eth0', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'dig':
+      return { output: '; <<>> DiG 9.18.1 <<>> example.com\n;; global options: +cmd\n;; Got answer:\n;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 12345\n;; ANSWER SECTION:\nexample.com.\t\t3600\tIN\tA\t93.184.216.34\n\n;; Query time: 12 msec\n;; SERVER: 127.0.0.53#53(127.0.0.53)', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'top':
+      return { output: 'top - 12:34:56 up 42 days,  3:21,  2 users,  load average: 0.15, 0.10, 0.05\nTasks: 150 total,   1 running, 149 sleeping,   0 stopped,   0 zombie\n%Cpu(s):  2.3 us,  1.0 sy,  0.0 ni, 96.5 id,  0.2 wa,  0.0 hi,  0.0 si\nMiB Mem :   7982.5 total,   2150.3 free,   3200.1 used,   2632.1 buff/cache\nMiB Swap:   2048.0 total,   2048.0 free,      0.0 used.   4100.2 avail Mem\n\n    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND\n   1234 root      20   0  500000  50000  10000 S   2.0   0.6   5:00.00 nginx\n   5678 student   20   0  300000  30000   5000 S   1.0   0.4   2:00.00 node', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'kill':
+      return { output: '', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'killall':
+      return { output: '', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'nice':
+      return { output: '', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'lscpu':
+      return { output: 'Architecture:          x86_64\nCPU op-mode(s):      32-bit, 64-bit\nCPU(s):              4\nThread(s) per core:  2\nCore(s) per socket:  2\nSocket(s):           1\nModel name:          Intel(R) Core(TM) i5-8250U CPU @ 1.60GHz\nCPU MHz:             1800.000\nCPU max MHz:         3400.0000', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'lsblk':
+      return { output: 'NAME   MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT\nsda      8:0    0   150G  0 disk\n├─sda1   8:1    0    50G  0 part /\n├─sda2   8:2    0   100G  0 part /home\n└─sda3   8:3    0     2G  0 part [SWAP]\nsr0     11:0    1  1024M  0 rom', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'w':
+      return { output: ' 12:34:56 up 42 days,  3:21,  2 users,  load average: 0.15, 0.10, 0.05\nUSER     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT\nstudent  pts/0    192.168.1.5      09:00    0.00s  0.50s  0.01s w\nadmin    pts/1    192.168.1.10     10:30    5:00   1.20s  0.10s vim config.txt', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'last':
+      return { output: 'student  pts/0        192.168.1.5      Mon Jan  1 09:00   still logged in\nadmin    pts/1        192.168.1.10     Mon Jan  1 10:30   still logged in\nstudent  pts/0        192.168.1.5      Sun Dec 31 08:00 - 18:00  (10:00)\n\nwtmp begins Mon Jan  1 00:00:00 2024', newCwd: cwd, newFs: fs, isError: false };
     
     default:
       // Check for variable assignment
