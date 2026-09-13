@@ -81,6 +81,65 @@ $ echo -e "Первая строка\\nВторая строка"
 Вторая строка`,
         note: "$(command) — это подстановка команды, результат команды вставляется в строку",
       },
+      {
+        title: "Специальные символы",
+        content: `В Bash есть специальные символы, которые имеют особое значение:
+
+- **; (точка с запятой)** — разделитель команд
+- **& (амперсанд)** — выполнить в фоне
+- **| (пайп)** — передать вывод одной команды в другую
+- **> и >>** — перенаправление вывода
+- **<** — перенаправление ввода
+- **# (хеш)** — комментарий
+- **\\ (обратный слеш)** — экранирование
+- **\` (обратная кавычка)** — выполнение команды
+- **$** — обращение к переменной
+- **~ (тильда)** — домашняя директория
+- **\*** — любой символ (wildcard)
+- **?** — один любой символ`,
+        code: `$ ls; pwd; date              # Три команды подряд
+$ sleep 10 &                # Выполнить в фоне
+$ ls | grep "file"          # Пайп
+$ echo "hello" > file.txt   # Перенаправление
+$ # Это комментарий
+$ echo "Hello \\\"World\\\""    # Экранирование кавычек
+$ echo ~                    # Домашняя директория
+$ ls *.txt                  # Все .txt файлы`,
+      },
+      {
+        title: "Горячие клавиши терминала",
+        content: `Эффективная работа в терминале невозможна без знания горячих клавиш:
+
+**Навигация:**
+- \`Ctrl+A\` — в начало строки
+- \`Ctrl+E\` — в конец строки
+- \`Ctrl+F\` — вперёд на символ
+- \`Ctrl+B\` — назад на символ
+- \`Alt+F\` — вперёд на слово
+- \`Alt+B\` — назад на слово
+
+**Редактирование:**
+- \`Ctrl+U\` — удалить до начала строки
+- \`Ctrl+K\` — удалить до конца строки
+- \`Ctrl+W\` — удалить слово
+- \`Ctrl+Y\` — вставить удалённое
+- \`Ctrl+D\` — удалить символ под курсором
+- \`Ctrl+H\` — удалить символ перед курсором
+
+**История:**
+- \`Ctrl+R\` — поиск по истории
+- \`Ctrl+G\` — выйти из поиска
+- \`↑/↓\` — навигация по истории`,
+        code: `# Попробуйте эти комбинации:
+$ Ctrl+A                   # Переместиться в начало
+$ Ctrl+E                   # Переместиться в конец
+$ Ctrl+R                   # Найти команду в истории
+$ Ctrl+L                   # Очистить экран
+$ Ctrl+C                   # Прервать текущую команду
+$ Ctrl+D                   # Выйти из оболочки
+$ Ctrl+Z                   # Приостановить процесс`,
+        note: "Ctrl+R — одна из самых полезных комбинаций! Используйте её для поиска старых команд.",
+      },
     ],
     exercises: [
       {
@@ -114,6 +173,22 @@ $ echo -e "Первая строка\\nВторая строка"
         hint: "Введите hostname",
         expectedCommands: ["hostname"],
         successMessage: "🎉 Вы узнали имя компьютера!",
+      },
+      {
+        id: "1-5",
+        title: "Время работы системы",
+        description: "Покажите сколько работает система с помощью команды uptime",
+        hint: "Введите uptime",
+        expectedCommands: ["uptime"],
+        successMessage: "🎉 Вы знаете время работы системы!",
+      },
+      {
+        id: "1-6",
+        title: "Echo с форматированием",
+        description: "Выведите текст 'Hello\\nWorld' с переносом строки используя echo -e",
+        hint: "echo -e 'Hello\\nWorld'",
+        expectedCommands: ["echo -e 'Hello\\nWorld'", "echo -e \"Hello\\nWorld\""],
+        successMessage: "🎉 Вы освоили форматированный вывод!",
       },
     ],
   },
@@ -219,6 +294,58 @@ $ ech[TAB]             # Дополнит до echo
 $ Ctrl+R               # Поиск в истории команд`,
         note: "Tab — ваш лучший друг! Используйте его постоянно.",
       },
+      {
+        title: "Абсолютные и относительные пути",
+        content: `Понимание путей — основа навигации:
+
+**Абсолютный путь** — начинается с корня \`/\`:
+- \`/home/student/documents/file.txt\`
+- \`/etc/nginx/nginx.conf\`
+- \`/var/log/syslog\`
+
+**Относительный путь** — начинается от текущей директории:
+- \`documents/file.txt\` (если вы в /home/student)
+- \`./file.txt\` (явно указать текущую директорию)
+- \`../file.txt\` (файл в родительской директории)
+
+**Специальные обозначения:**
+- \`.\` — текущая директория
+- \`..\` — родительская директория
+- \`~\` — домашняя директория
+- \`-\` — предыдущая директория`,
+        code: `# Абсолютные пути
+$ cat /etc/hostname
+$ ls /var/log/
+$ cd /usr/local/bin
+
+# Относительные пути
+$ cat ./config.txt         # Файл в текущей директории
+$ cat ../backup.txt        # Файл в родительской директории
+$ ls ../../documents/      # На два уровня вверх
+
+# Специальные пути
+$ cd ~                     # Домашняя директория
+$ cd ~/projects            # Директория в домашней
+$ cd -                     # Вернуться в предыдущую`,
+      },
+      {
+        title: "Маски файлов (wildcards)",
+        content: `Маски позволяют работать с группами файлов:
+
+- **\*** — любая последовательность символов
+- **?** — один любой символ
+- **[abc]** — один из указанных символов
+- **[a-z]** — диапазон символов
+- **[!abc]** — любой символ КРОМЕ указанных`,
+        code: `$ ls *.txt                 # Все файлы .txt
+$ ls file?.txt             # file1.txt, fileA.txt, но не file10.txt
+$ ls [abc]*.txt            # Файлы начинающиеся с a, b или c
+$ ls [0-9]*.log            # Файлы начинающиеся с цифры
+$ ls *[!~]                 # Все файлы кроме заканчивающихся на ~
+$ rm *.tmp                 # Удалить все .tmp файлы
+$ cp *.jpg /backup/        # Копировать все .jpg`,
+        note: "Будьте осторожны с масками! rm *.txt удалит ВСЕ .txt файлы без подтверждения.",
+      },
     ],
     exercises: [
       {
@@ -244,6 +371,22 @@ $ Ctrl+R               # Поиск в истории команд`,
         hint: "Используйте cd ~ или просто cd",
         expectedCommands: ["cd ~", "cd", "cd /home"],
         successMessage: "🎉 Вы умеете перемещаться по файловой системе!",
+      },
+      {
+        id: "2-4",
+        title: "Скрытые файлы",
+        description: "Покажите все файлы включая скрытые в текущей директории",
+        hint: "ls -la или ls -a",
+        expectedCommands: ["ls -la", "ls -a", "ls -lha"],
+        successMessage: "🎉 Вы видите скрытые файлы!",
+      },
+      {
+        id: "2-5",
+        title: "Переход на уровень вверх",
+        description: "Перейдите в родительскую директорию",
+        hint: "cd ..",
+        expectedCommands: ["cd .."],
+        successMessage: "🎉 Вы перешли на уровень вверх!",
       },
     ],
   },
@@ -322,6 +465,32 @@ $ mkdir dir1 dir2 dir3          # Создать несколько директ
 $ mkdir -p a/b/c/d              # Создать вложенные директории
 $ mkdir -p project/{src,tests,docs}  # Создать структуру проекта`,
       },
+      {
+        title: "Информация о файлах",
+        content: `Команды для получения информации о файлах:`,
+        code: `$ file document.pdf        # Определить тип файла
+$ stat file.txt            # Подробная информация о файле
+$ wc -l file.txt           # Количество строк
+$ wc -w file.txt           # Количество слов
+$ wc -c file.txt           # Количество байт
+$ du -h file.txt           # Размер файла
+$ du -sh directory/        # Размер директории
+$ du -sh *                 # Размеры всех элементов
+$ du -sh * | sort -rh      # Сортировка по размеру`,
+      },
+      {
+        title: "Сравнение файлов",
+        content: `Команды для сравнения файлов и директорий:`,
+        code: `$ diff file1.txt file2.txt      # Различия между файлами
+$ diff -u file1.txt file2.txt  # Unified diff формат
+$ diff -r dir1/ dir2/          # Рекурсивное сравнение директорий
+$ cmp file1.txt file2.txt      # Побайтовое сравнение
+$ comm file1.txt file2.txt     # Сравнение отсортированных файлов
+
+# Визуальное сравнение
+$ vimdiff file1.txt file2.txt  # В Vim
+$ meld file1.txt file2.txt     # Графический инструмент`,
+      },
     ],
     exercises: [
       {
@@ -371,6 +540,30 @@ $ mkdir -p project/{src,tests,docs}  # Создать структуру про�
         hint: "rm filename",
         expectedCommands: ["rm test_old.txt"],
         successMessage: "🎉 Файл удалён!",
+      },
+      {
+        id: "3-7",
+        title: "Тип файла",
+        description: "Определите тип файла 'readme.txt' используя команду file",
+        hint: "file readme.txt",
+        expectedCommands: ["file readme.txt"],
+        successMessage: "🎉 Вы определили тип файла!",
+      },
+      {
+        id: "3-8",
+        title: "Подсчёт строк",
+        description: "Подсчитайте количество строк в файле 'readme.txt'",
+        hint: "wc -l readme.txt",
+        expectedCommands: ["wc -l readme.txt"],
+        successMessage: "🎉 Вы подсчитали строки!",
+      },
+      {
+        id: "3-9",
+        title: "Размер директории",
+        description: "Покажите размер текущей директории в читаемом формате",
+        hint: "du -sh .",
+        expectedCommands: ["du -sh .", "du -sh"],
+        successMessage: "🎉 Вы видите размер директории!",
       },
     ],
   },
@@ -462,6 +655,51 @@ $ echo $c              # 13
 $ ((a++))              # Инкремент
 $ echo $a              # 11`,
       },
+      {
+        title: "Манипуляции со строками",
+        content: `Bash предоставляет мощные средства для работы со строками:`,
+        code: `$ str="Hello, World!"
+
+# Длина строки
+$ echo \${#str}              # 13
+
+# Извлечение подстроки
+$ echo \${str:0:5}           # Hello (с позиции 0, 5 символов)
+$ echo \${str:7}             # World! (с позиции 7 до конца)
+
+# Замена
+$ echo \${str/World/Bash}    # Hello, Bash! (первое вхождение)
+$ echo \${str//l/L}          # HeLLo, WorLd! (все вхождения)
+
+# Удаление по шаблону
+$ file="document.tar.gz"
+$ echo \${file%.gz}          # document.tar (удалить суффикс .gz)
+$ echo \${file%%.*}          # document (удалить всё после первой точки)
+$ echo \${file#*.}           # tar.gz (удалить до первой точки)
+$ echo \${file##*.}          # gz (удалить до последней точки)
+
+# Преобразование регистра
+$ echo \${str^^}             # HELLO, WORLD! (верхний регистр)
+$ echo \${str,,}             # hello, world! (нижний регистр)`,
+      },
+      {
+        title: "Специальные переменные",
+        content: `Bash имеет множество специальных переменных:`,
+        code: `$ echo $0              # Имя скрипта/оболочки
+$ echo $1, $2, ...       # Позиционные параметры (аргументы)
+$ echo $@                # Все аргументы как отдельные слова
+$ echo $*                # Все аргументы как одно слово
+$ echo $#                # Количество аргументов
+$ echo $?                # Код возврата последней команды
+$ echo $$                # PID текущей оболочки
+$ echo $!                # PID последнего фонового процесса
+$ echo $RANDOM           # Случайное число (0-32767)
+$ echo $SECONDS          # Секунд с начала работы оболочки
+$ echo $LINENO           # Номер текущей строки в скрипте
+$ echo $BASH_VERSION     # Версия Bash
+$ echo $PWD              # Текущая директория
+$ echo $OLDPWD           # Предыдущая директория`,
+      },
     ],
     exercises: [
       {
@@ -487,6 +725,30 @@ $ echo $a              # 11`,
         hint: "echo $HOME",
         expectedCommands: ["echo $HOME"],
         successMessage: "🎉 Вы знаете свою домашнюю директорию!",
+      },
+      {
+        id: "4-4",
+        title: "Длина строки",
+        description: "Создайте переменную name='Alexander' и выведите её длину",
+        hint: "name='Alexander' затем echo ${#name}",
+        expectedCommands: ["name='Alexander'", "echo ${#name}"],
+        successMessage: "🎉 Длина строки: 9 символов!",
+      },
+      {
+        id: "4-5",
+        title: "Случайное число",
+        description: "Выведите случайное число используя специальную переменную",
+        hint: "echo $RANDOM",
+        expectedCommands: ["echo $RANDOM"],
+        successMessage: "🎉 Случайное число сгенерировано!",
+      },
+      {
+        id: "4-6",
+        title: "PID оболочки",
+        description: "Покажите PID текущей оболочки",
+        hint: "echo $$",
+        expectedCommands: ["echo $$"],
+        successMessage: "🎉 Вы знаете PID своей оболочки!",
       },
     ],
   },
@@ -605,6 +867,22 @@ $ case $action in
         expectedCommands: ["[ 10 -gt 5 ] && echo \"да\"", "[ 10 -gt 5 ] && echo yes"],
         successMessage: "🎉 10 действительно больше 5!",
       },
+      {
+        id: "5-3",
+        title: "Проверка строки",
+        description: "Проверьте пуста ли переменная name используя тест",
+        hint: "[ -z \"$name\" ] && echo \"пусто\"",
+        expectedCommands: ["[ -z \"$name\" ] && echo \"пусто\"", "[ -z $name ] && echo \"пусто\""],
+        successMessage: "🎉 Вы проверили строку!",
+      },
+      {
+        id: "5-4",
+        title: "Проверка директории",
+        description: "Проверьте является ли /home директорией",
+        hint: "[ -d /home ] && echo \"да\"",
+        expectedCommands: ["[ -d /home ] && echo \"да\"", "[ -d /home ] && echo yes"],
+        successMessage: "🎉 /home действительно директория!",
+      },
     ],
   },
   {
@@ -719,6 +997,14 @@ $ for f in *.jpg; do convert "$f" "\${f%.jpg}.png"; done`,
         expectedCommands: ["for i in {1..10}; do echo $i; done"],
         successMessage: "🎉 Цикл с числами работает!",
       },
+      {
+        id: "6-4",
+        title: "Чётные числа",
+        description: "Выведите чётные числа от 2 до 10 используя цикл",
+        hint: "for i in {2..10..2}; do echo $i; done",
+        expectedCommands: ["for i in {2..10..2}; do echo $i; done"],
+        successMessage: "🎉 Чётные числа выведены!",
+      },
     ],
   },
   {
@@ -802,6 +1088,14 @@ $ command | tee -a log.txt                # Добавить к файлу`,
         hint: "ls /nonexistent 2>/dev/null",
         expectedCommands: ["ls /nonexistent 2>/dev/null"],
         successMessage: "🎉 Ошибки подавлены!",
+      },
+      {
+        id: "7-4",
+        title: "Добавление в файл",
+        description: "Добавьте текст 'New Line' в конец файла 'listing.txt'",
+        hint: "echo 'New Line' >> listing.txt",
+        expectedCommands: ["echo 'New Line' >> listing.txt", "echo \"New Line\" >> listing.txt"],
+        successMessage: "🎉 Текст добавлен в файл!",
       },
     ],
   },
@@ -894,6 +1188,22 @@ $ cut -d: -f1,3 /etc/passwd       # Поля 1 и 3`,
         expectedCommands: ["find . -name \"*.txt\"", "find . -name '*.txt'"],
         successMessage: "🎉 Рекурсивный поиск работает!",
       },
+      {
+        id: "8-4",
+        title: "Поиск без регистра",
+        description: "Найдите строки содержащие 'ROOT' в файле /etc/passwd без учёта регистра",
+        hint: "grep -i root /etc/passwd",
+        expectedCommands: ["grep -i root /etc/passwd", "grep -i \"root\" /etc/passwd"],
+        successMessage: "🎉 Поиск без регистра работает!",
+      },
+      {
+        id: "8-5",
+        title: "Сортировка",
+        description: "Отсортируйте содержимое файла /etc/passwd",
+        hint: "sort /etc/passwd",
+        expectedCommands: ["sort /etc/passwd"],
+        successMessage: "🎉 Файл отсортирован!",
+      },
     ],
   },
   {
@@ -959,6 +1269,14 @@ $ awk '{print NR, NF, $0}' file.txt
         hint: "awk -F: '{print $1}' /etc/passwd",
         expectedCommands: ["awk -F: '{print $1}' /etc/passwd", "awk -F':' '{print $1}' /etc/passwd"],
         successMessage: "🎉 Вы извлекли данные с помощью awk!",
+      },
+      {
+        id: "9-3",
+        title: "Удаление строк",
+        description: "Удалите все пустые строки из вывода echo с помощью sed",
+        hint: "echo -e 'line1\\n\\nline2' | sed '/^$/d'",
+        expectedCommands: ["echo -e 'line1\\n\\nline2' | sed '/^$/d'"],
+        successMessage: "🎉 Пустые строки удалены!",
       },
     ],
   },
@@ -1071,6 +1389,14 @@ trap 'echo "Выход..."; cleanup' EXIT`,
         hint: "echo '#!/bin/bash\necho \"Hello, $1!\"' > greet.sh && chmod +x greet.sh && ./greet.sh World",
         expectedCommands: ["echo '#!/bin/bash' > greet.sh && echo 'echo \"Hello, $1!\"' >> greet.sh && chmod +x greet.sh && ./greet.sh World"],
         successMessage: "🎉 Скрипт с аргументами работает!",
+      },
+      {
+        id: "10-3",
+        title: "Сделать исполняемым",
+        description: "Сделайте скрипт script.sh исполняемым",
+        hint: "chmod +x script.sh",
+        expectedCommands: ["chmod +x script.sh", "chmod 755 script.sh"],
+        successMessage: "🎉 Скрипт стал исполняемым!",
       },
     ],
   },
