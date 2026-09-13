@@ -534,6 +534,307 @@ function simulateCommand(
     case 'last':
       return { output: 'student  pts/0        192.168.1.5      Mon Jan  1 09:00   still logged in\nadmin    pts/1        192.168.1.10     Mon Jan  1 10:30   still logged in\nstudent  pts/0        192.168.1.5      Sun Dec 31 08:00 - 18:00  (10:00)\n\nwtmp begins Mon Jan  1 00:00:00 2024', newCwd: cwd, newFs: fs, isError: false };
     
+    case 'docker': {
+      const subCmd = args[0] || '';
+      if (subCmd === '--version' || subCmd === 'version') {
+        return { output: 'Docker version 24.0.7, build afdd53b', newCwd: cwd, newFs: fs, isError: false };
+      }
+      if (subCmd === 'ps') {
+        return { output: 'CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES\nabc123def456   nginx     "/docker-entrypoint.…"   5 minutes ago   Up 5 minutes   0.0.0.0:8080->80/tcp   web', newCwd: cwd, newFs: fs, isError: false };
+      }
+      if (subCmd === 'images') {
+        return { output: 'REPOSITORY    TAG       IMAGE ID       CREATED       SIZE\nnginx         latest    605c77e624dd   2 weeks ago   141MB\nubuntu        22.04     27941809078c   3 weeks ago   77.8MB\npostgres      15        74d7a1a9e3a1   4 weeks ago   379MB\nnode          18        84e2b95a1d2c   5 weeks ago   996MB', newCwd: cwd, newFs: fs, isError: false };
+      }
+      if (subCmd === 'run') {
+        return { output: 'a1b2c3d4e5f6g7h8i9j0', newCwd: cwd, newFs: fs, isError: false };
+      }
+      if (subCmd === 'info') {
+        return { output: 'Client: Docker Engine - Community\n Version:    24.0.7\n Context:    default\nServer:\n Containers: 3\n  Running: 1\n  Paused: 0\n  Stopped: 2\n Images: 4\n Server Version: 24.0.7\n Storage Driver: overlay2\n Operating System: Ubuntu 22.04.3 LTS\n Total Memory: 7.7GiB', newCwd: cwd, newFs: fs, isError: false };
+      }
+      return { output: '', newCwd: cwd, newFs: fs, isError: false };
+    }
+    
+    case 'git': {
+      const subCmd = args[0] || '';
+      if (subCmd === 'status') {
+        return { output: 'On branch main\nYour branch is up to date with \'origin/main\'.\n\nChanges not staged for commit:\n  (use "git add <file>..." to update what will be committed)\n  (use "git restore <file>..." to discard changes in working directory)\n        modified:   src/index.js\n\nno changes added to commit (use "git add" and/or "git commit -a")', newCwd: cwd, newFs: fs, isError: false };
+      }
+      if (subCmd === 'log') {
+        if (args.includes('--oneline')) {
+          return { output: 'a1b2c3d Update README\nb2c3d4e Add new feature\nc3d4e5f Fix bug in parser\nd4e5f6g Initial commit', newCwd: cwd, newFs: fs, isError: false };
+        }
+        return { output: 'commit a1b2c3d4e5f6g7h8i9j0 (HEAD -> main, origin/main)\nAuthor: Student <student@example.com>\nDate:   Mon Jan 1 12:00:00 2024 +0000\n\n    Update README\n\ncommit b2c3d4e5f6g7h8i9j0k1\nAuthor: Student <student@example.com>\nDate:   Sun Dec 31 15:30:00 2023 +0000\n\n    Add new feature', newCwd: cwd, newFs: fs, isError: false };
+      }
+      if (subCmd === 'branch') {
+        return { output: '* main\n  feature\n  develop', newCwd: cwd, newFs: fs, isError: false };
+      }
+      if (subCmd === 'remote') {
+        return { output: 'origin\thttps://github.com/user/repo.git (fetch)\norigin\thttps://github.com/user/repo.git (push)', newCwd: cwd, newFs: fs, isError: false };
+      }
+      if (subCmd === 'checkout' || subCmd === 'switch') {
+        return { output: args.includes('-b') ? `Switched to a new branch '${args[args.length - 1]}'` : `Switched to branch '${args[args.length - 1]}'`, newCwd: cwd, newFs: fs, isError: false };
+      }
+      if (subCmd === 'push') {
+        return { output: 'Enumerating objects: 5, done.\nCounting objects: 100% (5/5), done.\nWriting objects: 100% (3/3), 288 bytes | 288.00 KiB/s, done.\nTo https://github.com/user/repo.git\n   a1b2c3d..b2c3d4e  main -> main', newCwd: cwd, newFs: fs, isError: false };
+      }
+      return { output: '', newCwd: cwd, newFs: fs, isError: false };
+    }
+    
+    case 'mysql':
+      return { output: '+--------------------+\n| Database           |\n+--------------------+\n| information_schema |\n| mysql              |\n| performance_schema |\n| sys                |\n| myapp              |\n+--------------------+', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'mysqldump':
+      return { output: '-- MySQL dump 10.13  Distrib 8.0.35\n-- Host: localhost    Database: myapp\n-- ------------------------------------------------------\n/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;\n-- Dump completed on 2024-01-01 12:00:00', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'psql':
+      return { output: 'psql (15.4)\nType "help" for help.\n\npostgres=# \n                  List of databases\n   Name    |  Owner   | Encoding |  Collate   |   Ctype    \n-----------+----------+----------+------------+------------\n myapp     | postgres | UTF8     | en_US.UTF-8| en_US.UTF-8\n postgres  | postgres | UTF8     | en_US.UTF-8| en_US.UTF-8\n template0 | postgres | UTF8     | en_US.UTF-8| en_US.UTF-8\n template1 | postgres | UTF8     | en_US.UTF-8| en_US.UTF-8', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'pg_dump':
+      return { output: '--\n-- PostgreSQL database dump\n--\n-- Dumped from database version 15.4\n-- Dumped by pg_dump version 15.4\n\nSET statement_timeout = 0;\nSET lock_timeout = 0;\n--\n-- Name: myapp; Type: DATABASE; Schema: -; Owner: postgres\n--\n\nCREATE DATABASE myapp WITH TEMPLATE = template0 ENCODING = \'UTF8\';\n\n-- Dump completed on 2024-01-01 12:00:00', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'sqlite3':
+      return { output: 'SQLite version 3.37.2 2022-01-06 13:25:16\nEnter ".help" for usage hints.\nsqlite> .tables\nusers  posts  comments', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'nano':
+      return { output: '  GNU nano 6.2                                            Modified  \n  \n  Welcome to nano text editor\n  \n  ^G Help      ^O Write Out ^W Where Is  ^K Cut       ^U Paste     ^Y Prev Page\n  ^X Exit      ^R Read File ^\\ Replace   ^J Justify   ^T Execute   ^V Next Page', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'vim':
+    case 'vi':
+      return { output: '~\n~\n~\n~\n"file.txt" [New file]\n-- INSERT --', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'jq': {
+      // Handle piped jq
+      if (args[0] && args[0].startsWith('.')) {
+        const selector = args[0];
+        if (selector === '.name') {
+          return { output: '"John"', newCwd: cwd, newFs: fs, isError: false };
+        }
+        if (selector === 'length') {
+          return { output: '5', newCwd: cwd, newFs: fs, isError: false };
+        }
+        if (selector.includes('select')) {
+          return { output: '{\n  "name": "B",\n  "age": 30\n}', newCwd: cwd, newFs: fs, isError: false };
+        }
+        return { output: '{}', newCwd: cwd, newFs: fs, isError: false };
+      }
+      return { output: '', newCwd: cwd, newFs: fs, isError: false };
+    }
+    
+    case 'dmesg':
+      return { output: '[    0.000000] Linux version 5.15.0-91-generic\n[    0.000000] Command line: BOOT_IMAGE=/vmlinuz-5.15.0-91-generic\n[    0.234567] Memory: 8042456K/8388608K available\n[    1.234567] ACPI: Core revision 20210730\n[    2.345678] usb 1-1: new high-speed USB device number 2\n[   10.456789] EXT4-fs (sda1): mounted filesystem with ordered data mode', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'lsof':
+      return { output: 'COMMAND   PID   USER   FD   TYPE DEVICE SIZE/OFF NODE NAME\nnginx    1234   root    6u  IPv4  12345      0t0  TCP *:http (LISTEN)\nnginx    1234   root    7u  IPv4  12346      0t0  TCP *:https (LISTEN)\nsshd     5678   root    3u  IPv4  56789      0t0  TCP *:ssh (LISTEN)\npostgres 9012 postgres  5u  IPv6  90123      0t0  TCP *:postgresql (LISTEN)', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'strace':
+      return { output: 'execve("/bin/ls", ["ls"], 0x7ffd12345678 /* 25 vars */) = 0\nbrk(NULL)                               = 0x55a123456000\narch_prctl(0x3001 /* ARCH_??? */, 0x7ffd12345678) = -1 EINVAL\nmmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7f1234567000\naccess("/etc/ld.so.preload", R_OK) = -1 ENOENT', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'tcpdump':
+      return { output: 'tcpdump: verbose output suppressed, use -v or -vv for full protocol decode\nlistening on eth0, link-type EN10MB (Ethernet), capture size 262144 bytes\n12:34:56.789012 IP 192.168.1.10.54321 > 93.184.216.34.80: Flags [S], seq 1234567890\n12:34:56.789456 IP 93.184.216.34.80 > 192.168.1.10.54321: Flags [S.], seq 987654321\n12:34:56.789789 IP 192.168.1.10.54321 > 93.184.216.34.80: Flags [.], ack 1', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'iostat':
+      return { output: 'Linux 5.15.0-91-generic (bash-tutorial)  01/01/2024  _x86_64_  (4 CPU)\n\navg-cpu:  %user   %nice %system %iowait  %steal   %idle\n           5.23    0.12    2.34    0.56    0.00   91.75\n\nDevice             tps    kB_read/s    kB_wrtn/s    kB_read    kB_wrtn\nsda               12.34       123.45        45.67     123456     456789', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'vmstat':
+      return { output: 'procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----\n r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st\n 1  0      0 2150312  51234 2632100    0    0    12    34  123  456  5  2 92  1  0', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'useradd':
+      return { output: '', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'adduser':
+      return { output: 'Adding user `username\' ...\nAdding new group `username\' (1001) ...\nAdding new user `username\' (1001) with group `username\' ...\nCreating home directory `/home/username\' ...\nCopying files from `/etc/skel\' ...', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'usermod':
+      return { output: '', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'userdel':
+      return { output: '', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'passwd':
+      return { output: 'Enter new UNIX password: \nRetype new UNIX password: \npasswd: password updated successfully', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'groupadd':
+      return { output: '', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'groups':
+      return { output: 'student sudo docker developers', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'id':
+      return { output: 'uid=1000(student) gid=1000(student) groups=1000(student),27(sudo),999(docker),1001(developers)', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'getent':
+      return { output: 'root:x:0:0:root:/root:/bin/bash\ndaemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin\nstudent:x:1000:1000:Student:/home/student:/bin/bash\nadmin:x:1001:1001:Admin:/home/admin:/bin/bash', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'sudo': {
+      const subCmd = args[0] || '';
+      if (subCmd === '-l') {
+        return { output: 'Matching Defaults entries for student on bash-tutorial:\n    env_reset, mail_badpass, secure_path=/usr/local/sbin\\:/usr/local/bin\\:/usr/sbin\\:/usr/bin\\:/sbin\\:/bin\n\nUser student may run the following commands on bash-tutorial:\n    (ALL : ALL) ALL\n    (ALL) NOPASSWD: /usr/bin/systemctl', newCwd: cwd, newFs: fs, isError: false };
+      }
+      if (subCmd === '-i' || subCmd === '-s') {
+        return { output: 'root@bash-tutorial:~#', newCwd: cwd, newFs: fs, isError: false };
+      }
+      return { output: '', newCwd: cwd, newFs: fs, isError: false };
+    }
+    
+    case 'visudo':
+      return { output: '# /etc/sudoers file\n# This file MUST be edited with \'visudo\'\n#\n# See the man page for details on how to write a sudoers file.\n#\nroot    ALL=(ALL:ALL) ALL\n%sudo   ALL=(ALL:ALL) ALL\nstudent ALL=(ALL) NOPASSWD: /usr/bin/systemctl', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'ufw': {
+      const subCmd = args[0] || '';
+      if (subCmd === 'status') {
+        if (args.includes('verbose')) {
+          return { output: 'Status: active\nLogging: on (low)\nDefault: deny (incoming), allow (outgoing)\nNew profiles: skip\n\nTo                         Action      From\n--                         ------      ----\n22/tcp                     ALLOW IN    Anywhere\n80/tcp                     ALLOW IN    Anywhere\n443/tcp                    ALLOW IN    Anywhere\n22/tcp (v6)                ALLOW IN    Anywhere (v6)\n80/tcp (v6)                ALLOW IN    Anywhere (v6)\n443/tcp (v6)               ALLOW IN    Anywhere (v6)', newCwd: cwd, newFs: fs, isError: false };
+        }
+        return { output: 'Status: active\n\nTo                         Action      From\n--                         ------      ----\n22/tcp                     ALLOW       Anywhere\n80/tcp                     ALLOW       Anywhere\n443/tcp                    ALLOW       Anywhere', newCwd: cwd, newFs: fs, isError: false };
+      }
+      if (subCmd === 'enable' || subCmd === 'disable' || subCmd === 'allow' || subCmd === 'deny' || subCmd === 'delete' || subCmd === 'reset' || subCmd === 'reload' || subCmd === 'default') {
+        return { output: subCmd === 'enable' ? 'Firewall is active and enabled on system startup' : '', newCwd: cwd, newFs: fs, isError: false };
+      }
+      return { output: '', newCwd: cwd, newFs: fs, isError: false };
+    }
+    
+    case 'iptables': {
+      if (args.includes('-L')) {
+        return { output: 'Chain INPUT (policy ACCEPT)\ntarget     prot opt source               destination\nACCEPT     all  --  anywhere             anywhere\nACCEPT     tcp  --  anywhere             anywhere             tcp dpt:ssh\nACCEPT     tcp  --  anywhere             anywhere             tcp dpt:http\nACCEPT     tcp  --  anywhere             anywhere             tcp dpt:https\n\nChain FORWARD (policy DROP)\ntarget     prot opt source               destination\n\nChain OUTPUT (policy ACCEPT)\ntarget     prot opt source               destination', newCwd: cwd, newFs: fs, isError: false };
+      }
+      return { output: '', newCwd: cwd, newFs: fs, isError: false };
+    }
+    
+    case 'fail2ban-client':
+      return { output: 'Status\n|- Number of jail:\t3\n`- Jail list:\tnginx, sshd, apache', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'certbot':
+      return { output: 'Saving debug log to /var/log/letsencrypt/letsencrypt.log\n\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\nCertificate Name: example.com\nDomains: example.com www.example.com\nExpiry Date: 2024-04-01 00:00:00+00:00 (VALID: 89 days)\nCertificate Path: /etc/letsencrypt/live/example.com/fullchain.pem\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'openssl':
+      return { output: 'a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6A7B8C9D0', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'watch':
+      return { output: 'Every 1.0s: command                              bash-tutorial: Mon Jan  1 12:34:56 2024\n\nFilesystem      Size  Used Avail Use% Mounted on\n/dev/sda1        50G   20G   28G  42% /', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'python3':
+    case 'python':
+      return { output: 'Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) ...\n192.168.1.5 - - [01/Jan/2024 12:34:56] "GET / HTTP/1.1" 200 -', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'history':
+      return { output: '  101  ls -la\n  102  cd projects\n  103  git status\n  104  docker ps\n  105  sudo systemctl restart nginx\n  106  tail -f /var/log/nginx/access.log\n  107  ps aux | grep node\n  108  netstat -tlnp\n  109  ufw status\n  110  history', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'diff':
+      return { output: '1c1\n< line one\n---\n> line ONE\n5a6,7\n> new line 6\n> new line 7', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'paste':
+      return { output: 'field1\tfield3\nfield2\tfield4', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'cut':
+      return { output: 'root\ndaemon\nstudent\nadmin', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'tr':
+      return { output: 'Kj9#mP2$qR5&nT8@wL1!yH4^zX7*', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'xargs':
+      return { output: '', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'tee':
+      return { output: '', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'seq':
+      return { output: '1\n2\n3\n4\n5', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'yes':
+      return { output: 'y\ny\ny\ny\ny', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'basename':
+      return { output: 'file.txt', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'dirname':
+      return { output: '/home/student', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'realpath':
+      return { output: '/home/student/file.txt', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'stat':
+      return { output: '  File: file.txt\n  Size: 1234       \tBlocks: 8          IO Block: 4096   regular file\nDevice: 801h/2049d\tInode: 1234567     Links: 1\nAccess: (0644/-rw-r--r--)  Uid: ( 1000/student)   Gid: ( 1000/student)\nAccess: 2024-01-01 12:00:00.000000000 +0000\nModify: 2024-01-01 11:30:00.000000000 +0000\nChange: 2024-01-01 11:30:00.000000000 +0000', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'file':
+      return { output: 'file.txt: ASCII text\nscript.sh: Bourne-Again shell script, ASCII text executable\nimage.png: PNG image data, 800 x 600, 8-bit/color RGBA, non-interlaced', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'md5sum':
+    case 'sha256sum':
+      return { output: 'e99a18c428cb38d5f260853678922e03  file.txt', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'cal':
+      return { output: '    January 2024\nSu Mo Tu We Th Fr Sa\n    1  2  3  4  5  6\n 7  8  9 10 11 12 13\n14 15 16 17 18 19 20\n21 22 23 24 25 26 27\n28 29 30 31', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'bc':
+      return { output: '42', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'expr':
+      return { output: '42', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'apropos':
+      return { output: 'file (1)            - determine file type\nfile (2)            - open a file\nfile (5)            - file formats\nfile_test (n)       - Check file types and attributes', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'whatis':
+      return { output: 'ls (1)               - list directory contents', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'type':
+      return { output: 'ls is aliased to `ls --color=auto\'\necho is a shell builtin\nfind is /usr/bin/find', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'alias':
+      return { output: 'alias ll=\'ls -la\'\nalias la=\'ls -A\'\nalias l=\'ls -CF\'\nalias grep=\'grep --color=auto\'\nalias gs=\'git status\'', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'source':
+      return { output: '', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'export':
+      return { output: '', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'set':
+      return { output: 'BASH=/bin/bash\nBASH_VERSION=\'5.1.16(1)-release\'\nHOME=/home/student\nHOSTNAME=bash-tutorial\nPATH=/usr/local/bin:/usr/bin:/bin\nPWD=/home/student\nSHELL=/bin/bash\nUSER=student', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'read':
+      return { output: '', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'printf':
+      return { output: 'Hello World', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'test':
+      return { output: '', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'true':
+      return { output: '', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'false':
+      return { output: '', newCwd: cwd, newFs: fs, isError: true };
+    
+    case 'sleep':
+      return { output: '', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'time':
+      return { output: 'real\t0m0.123s\nuser\t0m0.100s\nsys\t0m0.023s', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'timeout':
+      return { output: '', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'nohup':
+      return { output: 'nohup: ignoring input and appending output to \'nohup.out\'', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'jobs':
+      return { output: '[1]+  Running                 long_command &\n[2]-  Stopped                 vim file.txt', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'bg':
+    case 'fg':
+      return { output: '[1]+ long_command &', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'renice':
+      return { output: '1234 (process ID) old priority 0, new priority 10', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'pgrep':
+      return { output: '1234\n5678', newCwd: cwd, newFs: fs, isError: false };
+    
+    case 'pkill':
+      return { output: '', newCwd: cwd, newFs: fs, isError: false };
+    
     default:
       // Check for variable assignment
       if (trimmed.includes('=') && !trimmed.includes(' ')) {

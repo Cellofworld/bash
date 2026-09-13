@@ -1,10 +1,14 @@
 import { useState, useEffect } from 'react';
-import { lessons } from './data/lessons';
+import { lessons as basicLessons } from './data/lessons';
+import { advancedLessons } from './data/lessons-advanced';
 import { LessonView } from './components/LessonView';
 import { LessonList } from './components/LessonList';
 import { ProgressBar } from './components/ProgressBar';
 import { Header } from './components/Header';
-import type { Progress } from './types';
+import type { Progress, Lesson } from './types';
+
+const lessons: Lesson[] = [...basicLessons, ...advancedLessons];
+const TOTAL_LESSONS = lessons.length;
 
 const STORAGE_KEY = 'bash-tutorial-progress';
 
@@ -21,7 +25,7 @@ function saveProgress(progress: Progress) {
 }
 
 export default function App() {
-  const [progress, setProgress] = useState<Progress>(loadProgress);
+  const [progress, setProgress] = useState<Progress>(loadProgress());
   const [currentView, setCurrentView] = useState<'home' | 'lesson'>('home');
   const [selectedLesson, setSelectedLesson] = useState<number | null>(null);
 
@@ -63,7 +67,9 @@ export default function App() {
   };
 
   const resetProgress = () => {
-    setProgress({ completedExercises: [], completedLessons: [], currentLesson: null });
+    if (confirm('Вы уверены, что хотите сбросить весь прогресс?')) {
+      setProgress({ completedExercises: [], completedLessons: [], currentLesson: null });
+    }
   };
 
   const totalExercises = lessons.reduce((sum, l) => sum + l.exercises.length, 0);
@@ -85,7 +91,7 @@ export default function App() {
               completed={completedCount} 
               total={totalExercises} 
               lessonsCompleted={progress.completedLessons.length}
-              totalLessons={lessons.length}
+              totalLessons={TOTAL_LESSONS}
             />
             <LessonList 
               lessons={lessons} 
@@ -103,7 +109,7 @@ export default function App() {
             onBack={goHome}
             onNextLesson={() => {
               const nextId = selectedLesson + 1;
-              if (nextId <= lessons.length) openLesson(nextId);
+              if (nextId <= TOTAL_LESSONS) openLesson(nextId);
             }}
             onPrevLesson={() => {
               const prevId = selectedLesson - 1;

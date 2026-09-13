@@ -56,11 +56,11 @@ export function LessonView({ lesson, progress, onCompleteExercise, onBack, onNex
             <ChevronLeft className="w-4 h-4" />
           </button>
           <span className="text-sm text-gray-400 px-2">
-            {lesson.id} / 20
+            {lesson.id} / 30
           </span>
           <button
             onClick={onNextLesson}
-            disabled={lesson.id >= 20}
+            disabled={lesson.id >= 30}
             className="p-2 rounded-lg bg-gray-800 hover:bg-gray-700 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
           >
             <ChevronRight className="w-4 h-4" />
