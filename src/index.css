@@ -1,1 +1,81 @@
 @import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+/* Custom scrollbar for terminal */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: #374151;
+  border-radius: 3px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: #4b5563;
+}
+
+/* Terminal cursor animation */
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+/* Code block styling */
+pre code {
+  tab-size: 4;
+}
+
+/* Smooth transitions */
+* {
+  scroll-behavior: smooth;
+}
+
+/* Selection color */
+::selection {
+  background-color: rgba(34, 197, 94, 0.3);
+  color: #fff;
+}
+
+/* Line clamp */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Animate in */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Prose-like styling for theory content */
+.prose p {
+  margin-bottom: 0.5rem;
+}
+
+.prose strong {
+  color: #e5e7eb;
+}
+
+/* Terminal input focus */
+input:focus {
+  outline: none;
+}
+
+/* Custom focus ring */
+button:focus-visible {
+  outline: 2px solid #22c55e;
+  outline-offset: 2px;
+}
