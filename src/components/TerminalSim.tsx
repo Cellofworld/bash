@@ -1228,63 +1228,73 @@ export function TerminalSim({ exercise, isCompleted, onComplete, onSuccess }: Te
 
   return (
     <div 
-      className="bg-gray-950 font-mono text-sm"
+      className="bg-slate-50 p-2"
       onClick={() => inputRef.current?.focus()}
     >
-      <div 
-        ref={terminalRef}
-        className="h-48 overflow-y-auto p-3 space-y-0.5 scrollbar-thin"
-      >
-        {lines.map((line, i) => (
-          <div key={i} className={`leading-relaxed ${
-            line.type === 'input' ? 'text-gray-100' :
-            line.type === 'output' ? 'text-gray-300' :
-            line.type === 'error' ? 'text-red-400' :
-            line.type === 'success' ? 'text-green-400 font-medium' :
-            'text-blue-400'
-          }`}>
-            {line.type === 'input' && (
-              <span>
-                <span className="text-green-400">student@bash</span>
-                <span className="text-gray-500">:</span>
-                <span className="text-blue-400">{cwd.replace('/home/student', '~')}</span>
-                <span className="text-gray-500">$ </span>
-              </span>
-            )}
-            {line.content}
+      <div className="rounded-lg overflow-hidden shadow-md border border-slate-200">
+        <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-800 border-b border-slate-700">
+          <div className="flex gap-1.5">
+            <div className="w-2.5 h-2.5 rounded-full bg-rose-500/80"></div>
+            <div className="w-2.5 h-2.5 rounded-full bg-amber-500/80"></div>
+            <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/80"></div>
           </div>
-        ))}
+          <span className="text-xs text-slate-400 ml-2 font-mono">bash — 80×24</span>
+        </div>
+        <div 
+          ref={terminalRef}
+          className="h-48 overflow-y-auto p-3 space-y-0.5 scrollbar-thin bg-slate-950"
+        >
+          {lines.map((line, i) => (
+            <div key={i} className={`leading-relaxed font-mono text-sm ${
+              line.type === 'input' ? 'text-slate-100' :
+              line.type === 'output' ? 'text-slate-300' :
+              line.type === 'error' ? 'text-rose-400' :
+              line.type === 'success' ? 'text-emerald-400 font-medium' :
+              'text-sky-400'
+            }`}>
+              {line.type === 'input' && (
+                <span>
+                  <span className="text-emerald-400">student@bash</span>
+                  <span className="text-slate-500">:</span>
+                  <span className="text-sky-400">{cwd.replace('/home/student', '~')}</span>
+                  <span className="text-slate-500">$ </span>
+                </span>
+              )}
+              {line.content}
+            </div>
+          ))}
+        </div>
+        
+        <form onSubmit={handleSubmit} className="flex items-center border-t border-slate-700 px-3 py-2 bg-slate-900">
+          <span className="text-emerald-400 mr-1 font-mono text-sm">student@bash</span>
+          <span className="text-slate-500 font-mono text-sm">:</span>
+          <span className="text-sky-400 mr-1 font-mono text-sm">{cwd.replace('/home/student', '~')}</span>
+          <span className="text-slate-500 font-mono text-sm">$ </span>
+          <input
+            ref={inputRef}
+            type="text"
+            value={input}
+            onChange={e => setInput(e.target.value)}
+            onKeyDown={handleKeyDown}
+            className="flex-1 bg-transparent outline-none text-slate-100 caret-emerald-400 font-mono text-sm"
+            placeholder={isCompleted ? "✓ Задание выполнено" : "Введите команду..."}
+            disabled={isCompleted}
+            autoFocus
+            spellCheck={false}
+          />
+          {!isCompleted && (
+            <button 
+              type="submit"
+              className="ml-2 p-1 text-slate-500 hover:text-emerald-400 transition-colors"
+            >
+              <Send className="w-4 h-4" />
+            </button>
+          )}
+          {isCompleted && (
+            <CheckCircle className="w-5 h-5 text-emerald-400 ml-2" />
+          )}
+        </form>
       </div>
-      
-      <form onSubmit={handleSubmit} className="flex items-center border-t border-gray-800 px-3 py-2">
-        <span className="text-green-400 mr-1">student@bash</span>
-        <span className="text-gray-500">:</span>
-        <span className="text-blue-400 mr-1">{cwd.replace('/home/student', '~')}</span>
-        <span className="text-gray-500">$ </span>
-        <input
-          ref={inputRef}
-          type="text"
-          value={input}
-          onChange={e => setInput(e.target.value)}
-          onKeyDown={handleKeyDown}
-          className="flex-1 bg-transparent outline-none text-gray-100 caret-green-400"
-          placeholder={isCompleted ? "✓ Задание выполнено" : "Введите команду..."}
-          disabled={isCompleted}
-          autoFocus
-          spellCheck={false}
-        />
-        {!isCompleted && (
-          <button 
-            type="submit"
-            className="ml-2 p-1 text-gray-500 hover:text-green-400 transition-colors"
-          >
-            <Send className="w-4 h-4" />
-          </button>
-        )}
-        {isCompleted && (
-          <CheckCircle className="w-5 h-5 text-green-400 ml-2" />
-        )}
-      </form>
     </div>
   );
 }

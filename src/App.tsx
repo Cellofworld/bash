@@ -77,7 +77,7 @@ export default function App() {
   const completedCount = progress.completedExercises.length;
 
   return (
-    <div className="min-h-screen bg-gray-950 text-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50/30 text-slate-900">
       <Header 
         onHome={goHome} 
         onReset={resetProgress}
@@ -119,6 +119,10 @@ export default function App() {
           />
         )}
       </main>
+
+      <footer className="mt-12 py-6 text-center text-sm text-slate-500 border-t border-slate-200">
+        <p>BashMaster — Интерактивный самоучитель Bash • {TOTAL_LESSONS} уроков • {totalExercises} задач</p>
+      </footer>
     </div>
   );
 }
